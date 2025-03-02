@@ -3,6 +3,18 @@ const express = require("express");
 const cors = require("cors");
 const crypto = require("crypto");
 
+const app = express();
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
+app.use(express.json());
+app.use(express.static("public"));
+app.use(Gun.serve);
+
 const secretKey = crypto.randomBytes(32).toString("hex");
 
 function encrypt(text, secretKey) {
@@ -40,10 +52,6 @@ function decrypt(encryptedData, secretKey) {
   return decrypted;
 }
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
 app.route("/").get((req, res) => {
   res.send("GunDB server running");
 });
@@ -64,7 +72,7 @@ app.route("/decrypt").post((req, res) => {
   }
 });
 
-const server = app.listen(3000, () => {
+const server = app.listen(8081, () => {
   console.log("GunDB server running on http://localhost:3000");
 });
 
