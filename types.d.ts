@@ -21,6 +21,7 @@ declare global {
     image: string | null | undefined;
     refreshToken: string | null | undefined;
     accessToken: string | null | undefined;
+    resetToken: string | null | undefined;
     createdAt: Date;
     updatedAt: Date;
   }
@@ -50,4 +51,4 @@ declare global {
   }
 }
 
-export {}
+export {};
