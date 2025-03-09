@@ -3,6 +3,11 @@ import AuthDao from "../dao/auth_dao";
 import { Request, Response } from "express";
 import { createToken } from "../utils/token";
 import { RegisterDto, UserLoginDto } from "../dto/auth_dto";
+import UserDao from "../dao/user-dao";
+import fs from "fs";
+import { sendEmail } from "../utils/send-email";
+import handlebars from "handlebars";
+import jwt from "jsonwebtoken";
 
 enum AuthType {
   GMAIL = "gmail",
@@ -11,6 +16,7 @@ enum AuthType {
 
 export default class AuthController {
   private static authDao = new AuthDao();
+  private static userDao = new UserDao();
 
   private static createTokenAndSendResponse = async (
     req: any,
@@ -82,6 +88,7 @@ export default class AuthController {
   static login = async (req: Request, res: Response) => {
     try {
       const userLoginDto: UserLogin = new UserLoginDto(req.body);
+      console.log(userLoginDto)
       const user = await AuthController.authDao.login(userLoginDto);
       const { accessToken, refreshToken } =
         await AuthController.createTokenAndSendResponse(req, res, user);
@@ -119,7 +126,92 @@ export default class AuthController {
     }
   };
 
-  static forgotPassword = async (req: Request, res: Response) => {};
+  static forgotPassword = async (req: Request, res: Response) => {
+    try {
+      const email = req.body.email;
+      const user = await AuthController.userDao.getUserByEmail(email);
+      if (!user) throw new Error("User not found");
 
-  static resetPassword = async (req: Request, res: Response) => {};
+      // send email
+
+      const token = createToken(user, "reset");
+      if (user.resetToken) {
+        await AuthController.authDao.updateToken(
+          user.id,
+          token,
+          "reset",
+          "inactive"
+        );
+      }
+
+      await AuthController.authDao.updateToken(
+        user.id,
+        token,
+        "reset",
+        "active"
+      );
+
+      const link = `http://localhost:3000/api/auth/reset-password/${user.id}/${token}`;
+
+      const htmlTemplate = await fs.promises.readFile(
+        "src/templates/reset-mail.html",
+        "utf-8"
+      );
+
+      const template = handlebars.compile(htmlTemplate);
+
+      const html = template({
+        name: user.name,
+        link: link,
+      });
+
+      await sendEmail(html, user.email);
+
+      res.status(200).json({ message: "Email sent", status: "SUCCESS" });
+    } catch (error: any) {
+      console.error("Error during forgot password:", error);
+      res.status(400).json({ error: error.message, status: "FAILURE" });
+    }
+  };
+
+  static resetPassword = async (req: Request, res: Response) => {
+    const { userId, token } = req.params;
+    const { password } = req.body;
+
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.REFRESH_TOKEN_SECRET as string
+      ) as { id: string; email: string };
+      if (decoded.id !== userId) throw new Error("Invalid token");
+
+      const user = await AuthController.userDao.getUserById(userId);
+      if (!user) throw new Error("User not found");
+
+      if (user.resetToken !== token || !user.resetToken)
+        throw new Error("Invalid token");
+
+      const hashedPassword = await hashingPassword(password);
+
+      await AuthController.userDao.updateUser(user.id, {
+        password: hashedPassword,
+      });
+
+      await AuthController.authDao.updateToken(
+        user.id,
+        token,
+        "reset",
+        "inactive"
+      );
+
+      res
+        .status(200)
+        .json({ message: "Password reset successfully", status: "SUCCESS" });
+    } catch (error: any) {
+      console.error("Error during reset password:", error);
+      if (error.name === "TokenExpiredError")
+        res.status(400).json({ error: "Token has expired", status: "FAILURE" });
+      res.status(400).json({ error: error.message, status: "FAILURE" });
+    }
+  };
 }

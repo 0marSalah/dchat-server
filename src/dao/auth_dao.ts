@@ -44,6 +44,28 @@ export default class AuthDao {
       });
     }
 
+    if (type === "reset" && state === "active") {
+      await prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          resetToken: token,
+        },
+      });
+    }
+
+    if (type === "reset" && state === "inactive") {
+      await prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          resetToken: null,
+        },
+      });
+    }
+
     if (state === "inactive") {
       await prisma.user.update({
         where: {
@@ -65,13 +87,9 @@ export default class AuthDao {
     });
     if (!user) throw new Error("User not found");
 
-    if (!isPassword(data.password, user.password))
-      throw new Error("Password is incorrect");
+    const isPasswordCorrect = await isPassword(data.password, user.password);
+    if (!isPasswordCorrect) throw new Error("Password is incorrect");
 
     return user;
   }
-
-  async forgotPassword() {}
-
-  async resetPassword() {}
 }
