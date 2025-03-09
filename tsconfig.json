@@ -7,6 +7,14 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": "./",
+    "paths": {
+      "@controllers/*": ["src/controllers/*"],
+      "@dao/*": ["src/dao/*"],
+      "@routes/*": ["src/routes/*"],
+      "@prisma/*": ["src/prisma/*"],
+      "@utils/*": ["src/utils/*"],
+    }
   }
 }
