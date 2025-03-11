@@ -1,13 +1,13 @@
-import { hashingPassword } from "../utils/hashing_pass";
-import AuthDao from "../dao/auth_dao";
-import { Request, Response } from "express";
-import { createToken } from "../utils/token";
-import { RegisterDto, UserLoginDto } from "../dto/auth_dto";
-import UserDao from "../dao/user-dao";
-import fs from "fs";
-import { sendEmail } from "../utils/send-email";
+import fs from "node:fs";
+import type { Request, Response } from "express";
 import handlebars from "handlebars";
 import jwt from "jsonwebtoken";
+import AuthDao from "../dao/auth_dao";
+import UserDao from "../dao/user-dao";
+import { RegisterDto, UserLoginDto } from "../dto/auth_dto";
+import { hashingPassword } from "../utils/hashing_pass";
+import { sendEmail } from "../utils/send-email";
+import { createToken } from "../utils/token";
 
 enum AuthType {
   GMAIL = "gmail",
@@ -21,14 +21,14 @@ export default class AuthController {
   private static createTokenAndSendResponse = async (
     req: any,
     res: Response,
-    user: User
+    user: User,
   ) => {
     const accessToken = createToken(user, "access");
     await AuthController.authDao.updateToken(
       user.id,
       accessToken,
       "access",
-      "active"
+      "active",
     );
     let refreshToken = null;
     if (req.body.isRemember) {
@@ -37,7 +37,7 @@ export default class AuthController {
         user.id,
         refreshToken,
         "refresh",
-        "active"
+        "active",
       );
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -63,9 +63,9 @@ export default class AuthController {
   static register = async (req: Request, res: Response) => {
     try {
       if (req.body.type === AuthType.REGULAR) {
-        let userRegisterDto = new RegisterDto(req.body);
+        const userRegisterDto = new RegisterDto(req.body);
         userRegisterDto.password = await hashingPassword(
-          userRegisterDto.password
+          userRegisterDto.password,
         );
         const newUser = await AuthController.authDao.register(userRegisterDto);
 
@@ -88,7 +88,7 @@ export default class AuthController {
   static login = async (req: Request, res: Response) => {
     try {
       const userLoginDto: UserLogin = new UserLoginDto(req.body);
-      console.log(userLoginDto)
+      console.log(userLoginDto);
       const user = await AuthController.authDao.login(userLoginDto);
       const { accessToken, refreshToken } =
         await AuthController.createTokenAndSendResponse(req, res, user);
@@ -107,13 +107,13 @@ export default class AuthController {
         user.id,
         "",
         "access",
-        "inactive"
+        "inactive",
       );
       await AuthController.authDao.updateToken(
         user.id,
         "",
         "refresh",
-        "inactive"
+        "inactive",
       );
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
@@ -140,7 +140,7 @@ export default class AuthController {
           user.id,
           token,
           "reset",
-          "inactive"
+          "inactive",
         );
       }
 
@@ -148,14 +148,14 @@ export default class AuthController {
         user.id,
         token,
         "reset",
-        "active"
+        "active",
       );
 
       const link = `http://localhost:3000/api/auth/reset-password/${user.id}/${token}`;
 
       const htmlTemplate = await fs.promises.readFile(
         "src/templates/reset-mail.html",
-        "utf-8"
+        "utf-8",
       );
 
       const template = handlebars.compile(htmlTemplate);
@@ -181,7 +181,7 @@ export default class AuthController {
     try {
       const decoded = jwt.verify(
         token,
-        process.env.REFRESH_TOKEN_SECRET as string
+        process.env.REFRESH_TOKEN_SECRET as string,
       ) as { id: string; email: string };
       if (decoded.id !== userId) throw new Error("Invalid token");
 
@@ -201,7 +201,7 @@ export default class AuthController {
         user.id,
         token,
         "reset",
-        "inactive"
+        "inactive",
       );
 
       res

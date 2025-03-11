@@ -1,0 +1,44 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "files": {
+    "ignore": [
+      ".github/",
+      "docs/.astro/",
+      "docs/dist/",
+      "docs/node_modules/",
+      "drizzle/",
+      "src/public/",
+      "dist/"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space"
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "a11y": {
+        "noRedundantRoles": "off",
+        "useSemanticElements": "off"
+      },
+      "recommended": true,
+      "correctness": {
+        "useJsxKeyInIterable": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noShadowRestrictedNames": "off",
+        "noExplicitAny": "off"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off"
+      }
+    }
+  }
+}

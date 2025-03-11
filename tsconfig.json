@@ -14,7 +14,7 @@
       "@dao/*": ["src/dao/*"],
       "@routes/*": ["src/routes/*"],
       "@prisma/*": ["src/prisma/*"],
-      "@utils/*": ["src/utils/*"],
+      "@utils/*": ["src/utils/*"]
     }
   }
 }

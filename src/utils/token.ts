@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const createToken = (
   userData: Partial<User>,
-  type: "access" | "refresh" | "reset"
+  type: "access" | "refresh" | "reset",
 ) => {
   const { id, email } = userData;
   const secret =

@@ -1,7 +1,7 @@
-import express from "express";
 import cors from "cors";
-import morgan from "morgan";
 import dotenv from "dotenv";
+import express from "express";
+import morgan from "morgan";
 import "tsconfig-paths/register";
 import cookieParser from "cookie-parser";
 

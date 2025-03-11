@@ -6,7 +6,7 @@ export const hashingPassword = async (password: string): Promise<string> => {
 
 export const isPassword = async (
   password: string | undefined,
-  hashedPassword: string | undefined | null
+  hashedPassword: string | undefined | null,
 ): Promise<boolean> => {
   if (!password || !hashedPassword) {
     return false;

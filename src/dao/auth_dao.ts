@@ -20,7 +20,7 @@ export default class AuthDao {
     id: string,
     token: string,
     type: string,
-    state: string
+    state: string,
   ): Promise<void> {
     if (type === "access" && state === "active") {
       await prisma.user.update({
