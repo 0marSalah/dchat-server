@@ -4,15 +4,7 @@
     "enabled": true
   },
   "files": {
-    "ignore": [
-      ".github/",
-      "docs/.astro/",
-      "docs/dist/",
-      "docs/node_modules/",
-      "drizzle/",
-      "src/public/",
-      "dist/"
-    ]
+    "ignore": [".github/", "dist/"]
   },
   "javascript": {
     "formatter": {
