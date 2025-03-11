@@ -1,5 +1,5 @@
-import { type NextFunction, Response } from "express";
-import jwt from "jsonwebtoken";
+import { type NextFunction, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
 const authenticateToken = (req: any, res: any, next: NextFunction) => {
   const token = req.cookies.accessToken;
@@ -7,7 +7,7 @@ const authenticateToken = (req: any, res: any, next: NextFunction) => {
   if (!token) {
     return res
       .status(401)
-      .json({ error: "Access token is missing", status: "FAILURE" });
+      .json({ error: 'Access token is missing', status: 'FAILURE' });
   }
 
   try {
@@ -18,10 +18,10 @@ const authenticateToken = (req: any, res: any, next: NextFunction) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.error("Error verifying token:", error);
+    console.error('Error verifying token:', error);
     return res
       .status(403)
-      .json({ error: "Invalid or expired token", status: "FAILURE" });
+      .json({ error: 'Invalid or expired token', status: 'FAILURE' });
   }
 };
 

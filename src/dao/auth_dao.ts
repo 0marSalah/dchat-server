@@ -1,5 +1,5 @@
-import prisma from "../prisma/prisma-client";
-import { isPassword } from "../utils/hashing_pass";
+import prisma from '../prisma/prisma-client';
+import { isPassword } from '../utils/hashing_pass';
 
 export default class AuthDao {
   async register(data: UserRegister): Promise<User> {
@@ -8,7 +8,7 @@ export default class AuthDao {
         email: data.email,
       },
     });
-    if (isExisting) throw new Error("User already exists");
+    if (isExisting) throw new Error('User already exists');
 
     const newUser = await prisma.user.create({
       data: data,
@@ -22,7 +22,7 @@ export default class AuthDao {
     type: string,
     state: string,
   ): Promise<void> {
-    if (type === "access" && state === "active") {
+    if (type === 'access' && state === 'active') {
       await prisma.user.update({
         where: {
           id: id,
@@ -33,7 +33,7 @@ export default class AuthDao {
       });
     }
 
-    if (type === "refresh" && state === "active") {
+    if (type === 'refresh' && state === 'active') {
       await prisma.user.update({
         where: {
           id: id,
@@ -44,7 +44,7 @@ export default class AuthDao {
       });
     }
 
-    if (type === "reset" && state === "active") {
+    if (type === 'reset' && state === 'active') {
       await prisma.user.update({
         where: {
           id: id,
@@ -55,7 +55,7 @@ export default class AuthDao {
       });
     }
 
-    if (type === "reset" && state === "inactive") {
+    if (type === 'reset' && state === 'inactive') {
       await prisma.user.update({
         where: {
           id: id,
@@ -66,7 +66,7 @@ export default class AuthDao {
       });
     }
 
-    if (state === "inactive") {
+    if (state === 'inactive') {
       await prisma.user.update({
         where: {
           id: id,
@@ -85,10 +85,10 @@ export default class AuthDao {
         email: data.email,
       },
     });
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error('User not found');
 
     const isPasswordCorrect = await isPassword(data.password, user.password);
-    if (!isPasswordCorrect) throw new Error("Password is incorrect");
+    if (!isPasswordCorrect) throw new Error('Password is incorrect');
 
     return user;
   }

@@ -1,6 +1,6 @@
 export enum AuthType {
-  GMAIL = "gmail",
-  REGULAR = "regular",
+  GMAIL = 'gmail',
+  REGULAR = 'regular',
 }
 
 export class RegisterDto {

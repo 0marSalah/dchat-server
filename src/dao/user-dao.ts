@@ -1,4 +1,4 @@
-import prisma from "../prisma/prisma-client";
+import prisma from '../prisma/prisma-client';
 
 export default class UserDao {
   async getUserByEmail(email: string): Promise<User> {
@@ -7,7 +7,7 @@ export default class UserDao {
         email,
       },
     });
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error('User not found');
 
     return user;
   }
@@ -18,7 +18,7 @@ export default class UserDao {
         id,
       },
     });
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error('User not found');
 
     return user;
   }

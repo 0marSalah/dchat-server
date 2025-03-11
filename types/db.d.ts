@@ -1,7 +1,7 @@
 declare global {
   enum AuthType {
-    GMAIL = "gmail",
-    REGULAR = "regular",
+    GMAIL = 'gmail',
+    REGULAR = 'regular',
   }
 
   interface Data {
