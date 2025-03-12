@@ -1,7 +1,10 @@
 import fs from 'node:fs';
+import prisma from '@prisma/prisma-client';
+import { generateRSAKeys } from '@utils/generateRSAKeys';
 import type { Request, Response } from 'express';
 import handlebars from 'handlebars';
 import jwt from 'jsonwebtoken';
+import type { User, UserLogin, UserRequest } from 'src/types';
 import AuthDao from '../dao/auth_dao';
 import UserDao from '../dao/user-dao';
 import { RegisterDto, UserLoginDto } from '../dto/auth_dto';
@@ -68,11 +71,24 @@ export default class AuthController {
           userRegisterDto.password,
         );
         const newUser = await AuthController.authDao.register(userRegisterDto);
+        const keyPair = generateRSAKeys();
+        await prisma.keypair.create({
+          data: {
+            userId: newUser.id,
+            public: keyPair.publicKey,
+            private: keyPair.privateKey,
+          },
+        });
 
         const { accessToken, refreshToken } =
           await AuthController.createTokenAndSendResponse(req, res, newUser);
 
-        res.status(201).json({ newUser, accessToken, refreshToken });
+        res.status(201).json({
+          newUser,
+          accessToken,
+          refreshToken,
+          publicKey: keyPair.publicKey,
+        });
       } else {
         res.status(400).json({
           error: 'Unsupported authentication type',

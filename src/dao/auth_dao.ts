@@ -1,3 +1,4 @@
+import type { User, UserLogin, UserRegister } from 'src/types';
 import prisma from '../prisma/prisma-client';
 import { isPassword } from '../utils/hashing_pass';
 
