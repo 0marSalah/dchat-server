@@ -6,9 +6,9 @@
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "baseUrl": "./",
+    "typeRoots": ["src/types", "./node_modules/@types"],
     "paths": {
       "@controllers/*": ["src/controllers/*"],
       "@dao/*": ["src/dao/*"],
@@ -16,5 +16,6 @@
       "@prisma/*": ["src/prisma/*"],
       "@utils/*": ["src/utils/*"]
     }
-  }
+  },
+  "include": ["src/**/*.ts", "src/types/**/*.d.ts"]
 }

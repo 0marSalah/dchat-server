@@ -1,3 +1,5 @@
+import type { User, UserLogin, UserRegister } from 'src/types';
+
 export enum AuthType {
   GMAIL = 'gmail',
   REGULAR = 'regular',

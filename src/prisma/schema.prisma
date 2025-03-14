@@ -26,15 +26,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account?
+  keypair keypair?
 }
 
-model Account {
+model keypair {
   id     String @id @default(uuid()) @db.Uuid
   userId String @unique @db.Uuid
 
-  pubKey  String @unique
-  privKey String @unique
+  public  String @unique
+  private String @unique
 
   user User @relation(fields: [userId], references: [id])
 

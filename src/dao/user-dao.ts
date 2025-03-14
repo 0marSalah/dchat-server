@@ -1,3 +1,4 @@
+import type { User } from 'src/types';
 import prisma from '../prisma/prisma-client';
 
 export default class UserDao {

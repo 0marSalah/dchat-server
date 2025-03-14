@@ -1,5 +1,6 @@
 import { type NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import type { UserRequest } from 'src/types';
 
 const authenticateToken = (req: any, res: any, next: NextFunction) => {
   const token = req.cookies.accessToken;

@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import type { User } from 'src/types';
 
 export const createToken = (
   userData: Partial<User>,
